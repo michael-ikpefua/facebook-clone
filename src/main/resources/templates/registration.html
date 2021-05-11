@@ -1,0 +1,73 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+  <meta charset="utf-8">
+  <title>Facebook - Welcome</title>
+  <link rel="stylesheet" href="assets/css/bootstrap.min.css">
+  <link rel="stylesheet" href="assets/css/style.css">
+</head>
+<body>
+
+
+<div class="container mt-5">
+
+  <div class="row signup">
+
+    <div class="col-lg-7">
+
+      <img src="" alt="">
+      <h1 class="logo pb-2">FaceBook</h1>
+      <h2 class="JavaFacebook mb-5">Welcome to Facebook.</h2>
+    </div>
+
+    <div class="col-lg-5">
+
+      <div class="shadow p-3 mb-5 bg-body rounded">
+        <h3 class="">Sign Up Page</h3>
+
+        <form action="" th:action="@{/register}" th:object="${user}" method="post">
+
+          <div class="mb-3">
+
+            <input type="text" th:field="*{firstName}" class="form-control" placeholder="First Name" aria-describedby="firstNameHelp">
+
+          </div>
+
+          <div class="mb-3">
+            <input type="text" th:field="*{lastName}" class="form-control" placeholder="Last Name" aria-describedby="lastNameHelp">
+          </div>
+
+          <div class="mb-3">
+            <input type="email"  th:field="*{email}"  class="form-control" placeholder="Email" aria-describedby="emailHelp">
+
+          </div>
+
+          <div class="mb-3">
+            <input type="password" th:field="*{password}" class="form-control" placeholder="Password" aria-describedby="passwordHelp">
+
+          </div>
+
+          <div class="d-grid">
+            <button type="submit" class="btn btn-primary btn-lg">Register</button>
+          </div>
+        </form>
+        <div class="d-grid gap-2 mt-3">
+          <p class="text-center mt-2">Have An Account?</p>
+          <div class="divider"></div>
+          <a th:href="@{/}" class="btn btn-link text-center ">
+            Login
+          </a>
+        </div>
+
+
+      </div>
+
+    </div>
+
+  </div>
+
+</div>
+
+
+</body>
+</html>
