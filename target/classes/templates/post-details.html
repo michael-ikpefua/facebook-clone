@@ -1,0 +1,207 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head >
+    <meta charset="utf-8">
+    <title> Welcome to Michael Facebook Page</title>
+    <link rel="stylesheet" href="/assets/css/bootstrap.min.css">
+    <link rel="stylesheet" href="/assets/css/style.css">
+</head>
+
+<body>
+
+<nav class="navbar mb-5 navbar-expand-lg navbar-light bg-light">
+    <div class="container-fluid">
+
+        <a class="navbar-brand" href="/dashboard">
+            <b class="javabook">Face</b>Book
+        </a>
+        <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+            <span class="navbar-toggler-icon"></span>
+        </button>
+        <div class="collapse navbar-collapse" id="navbarSupportedContent">
+            <ul class="navbar-nav me-auto mb-2 mb-lg-0">
+
+            </ul>
+            <div class="d-flex ">
+                <ul class="navbar-nav me-auto mb-2 mb-lg-0 d-flex justify-content-between align-items-center">
+                    <li class="nav-item" th:if="${session.containsKey('user_session')}" th:text="${session.user_session.getFullName()}">
+                    </li>
+
+                    <li class="nav-item">
+
+                        <form action="#"  th:action="@{/logout}" method="post">
+                            <button type="submit" class="btn btn-outline-primary btn-sm">
+                                Logout
+                            </button>
+                        </form>
+                    </li>
+
+                </ul>
+            </div>
+        </div>
+    </div>
+</nav>
+
+
+<div class="container">
+
+    <div class="row">
+        <div class="col-lg-3">
+            <div class="shadow p-3 mb-5 bg-body rounded text-center">
+                <img class="profile-pic-icon-three mt-4" src="assets/images/avatar.png" alt="">
+                <h5 class="mt-3" th:if="${session.containsKey('user_session')}">
+                    <span>Post Author: </span>
+                    <span th:text="${session.user_session.getFullName()}"></span>
+                </h5>
+                <h5>
+                    <span class="badge bg-dark">
+                        No of Likes <br>
+                        0
+                    </span>
+                </h5>
+            </div>
+        </div>
+        <div class="col-lg-9">
+
+            <div class="shadow p-3 mb-5 bg-body rounded">
+                <div class="row">
+
+<!--                    When Post Updated-->
+<!--                    <div class="alert alert-success" role="alert">-->
+<!--                        Post Updated Successfully!!!-->
+<!--                    </div>-->
+
+<!--                    Validation Message-->
+                    <div class="alert alert-danger" role="alert">
+                        Enter a field, don't dare confuse my database. (y)
+                    </div>
+<!--                 End of Validation Message-->
+
+                    <h4 class="text-center">View Posts</h4>
+                    <h6 class="card-subtitle mb-2 text-muted" th:text="${post.getBody()}" >
+                    </h6>
+                    <p class="text-muted">Date Post was Created</p>
+                    <div class="d-flex justify-content-between">
+                        <form action="" th:action="@{/post/like}" th:object="${post}"  method="post">
+                            <input type="hidden" name="post_id" value="<%=post.getId()%>">
+<!--                            <%-->
+<!--                            LikePostDAO likePostDAO = new LikePostDAO();-->
+
+<!--                            if (!likePostDAO.isPostLikedByUser(post.getId(), authUser.getId())) {-->
+<!--                            %>-->
+                            <button type="submit"  class="btn btn btn-outline-primary">Like</button>
+<!--                            <%-->
+<!--                            }-->
+<!--                            else {-->
+<!--                            %>-->
+                            <button type="submit" class="btn btn btn-outline-warning">Dislike</button>
+<!--                            <%-->
+<!--                            }-->
+<!--                            %>-->
+                        </form>
+<!--                        <%-->
+<!--                        if(authUser.getId() == post.getUser_id()) {-->
+<!--                        %>-->
+                        <form action="" th:action="@{/post/delete}" th:object="${post}" method="post">
+                            <input type="hidden" name="page" th:field="*{id}">
+                            <input type="submit" class="btn btn-danger" value="Delete Post">
+                        </form>
+<!--                        <%-->
+<!--                        }-->
+<!--                        %>-->
+                    </div>
+                </div>
+            </div>
+
+<!--            <%-->
+<!--            //Uncomment this line of code during demostration to show how this feature works in back end.-->
+<!--            if (post.getUser_id() == authUser.getId()) {-->
+<!--            %>-->
+            <div class="shadow p-3 mb-5 bg-body rounded mt-3">
+                <div class="row">
+                    <div class="col-lg-1">
+                        <img class="profile-pic-icon-two" src="/assets/images/avatar.png" alt="">
+                    </div>
+                    <form action="" th:action="@{/post/update}" th:object="${post}" method="post">
+                        <input type="hidden" th:field="*{id}">
+                        <div class="col-lg-11 text-right">
+                            <textarea class="form-control drag" th:field="*{body}" placeholder="write a post"></textarea>
+                            <button class="btn btn-success btn-md mt-3 btn-block" type="submit">Update Post</button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+
+
+            <div class="shadow p-3 mb-5 bg-body rounded">
+
+                <div class="row">
+<!--                    <%-->
+<!--                    if(request.getParameter("comment_success") != null) {-->
+<!--                    %>-->
+<!--                    <div class="alert alert-success" role="alert">-->
+<!--                        Comment Added Successully.-->
+<!--                    </div>-->
+<!--                    <%-->
+<!--                    }-->
+
+<!--                    %>-->
+                    <form action="" th:action="|/comment/${post.getId()}|" th:object="${comment}" method="post">
+                        <div class="row">
+                            <div class="col-lg-10">
+                                <input type="text" th:field="*{body}" class="form-control comment-form">
+                            </div>
+                            <div class="col-lg-2">
+                                <button type="submit" class="btn btn-primary">Add Comment</button>
+                            </div>
+                        </div>
+                    </form>
+                </div>
+            </div>
+
+<!--            <%-->
+<!--            ArrayList<Comment> comments = (ArrayList<Comment>) request.getAttribute("comments");-->
+<!--            if(comments.size() == 0){-->
+<!--            %>-->
+            <h4 class="text-center text-danger fw-bold" th:if="${comments.size() < 1}">No Comment Added for this Post!!</h4>
+<!--            <%-->
+<!--            } else {-->
+<!--            out.println("<h4> Comments </h4>");-->
+<!--            for(Comment comment : comments)-->
+<!--            {-->
+<!--            %>-->
+            <div th:each="comment : ${comments}" id="section-one" class="shadow p-3 mb-5 bg-body rounded">
+                <div class="row">
+                    <div class="col-lg-1">
+                        <img class="profile-pic-icon-two" src="/assets/images/avatar.png" />
+                    </div>
+                    <div class="col-lg-11">
+                        <h5 class="postName">
+<!--                            <%-->
+<!--                            User commentAuthor = (new UserDAO().getUserById(comment.getUser_id()));-->
+<!--                            out.print(commentAuthor.getName());-->
+<!--                            %>-->
+                        </h5>
+                        <b>
+
+                        </b>
+                        <h6 class="card-subtitle mb-2 text-muted" th:text="${comment.getBody()}">
+<!--                            <%= comment.getBody() %>-->
+                        </h6>
+                        <p class="post-date">Likes and Dis Likes Here</p>
+
+
+                    </div>
+
+                </div>
+            </div>
+
+
+        </div>
+
+    </div>
+</div>
+<footer class="text-center mt-5 mb-5">Java Book - 2021</footer>
+
+</body>
+</html>

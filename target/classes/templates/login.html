@@ -1,13 +1,14 @@
+
 <!DOCTYPE html>
 <html lang="en" xmlns:th="http://www.thymeleaf.org">
 <head>
   <meta charset="utf-8">
-  <title>Facebook - Welcome</title>
+  <title>[[ ${title} ]] Welcome to Michael Facebook Page</title>
   <link rel="stylesheet" href="assets/css/bootstrap.min.css">
   <link rel="stylesheet" href="assets/css/style.css">
 </head>
-<body>
 
+<body>
 
 <div class="container mt-5">
 
@@ -23,24 +24,16 @@
     <div class="col-lg-5">
 
       <div class="shadow p-3 mb-5 bg-body rounded">
+          <p th:if="${not_found}" th:text="${not_found}" class="text-danger"> I am suupose to be here</p>
 
-
-        <form action="#" method="post">
-          <input type="hidden" name="page" value="login">
+        <form action="#" th:action="@{/login}" th:object="${user}" method="post">
 
           <div class="mb-3">
-            <input type="email"  class="form-control" placeholder="Email Address" aria-describedby="emailHelp">
-<!--            <%-->
-<!--            if(request.getAttribute("email") != null) {-->
-<!--            %>-->
-<!--            <div id="emailHelp" class="form-text text-danger"><%= request.getAttribute("email").toString() %></div>-->
-<!--            <%-->
-<!--            }-->
-<!--            %>-->
+            <input type="email"  class="form-control" th:field="*{email}" placeholder="Email Address" aria-describedby="emailHelp">
           </div>
 
           <div class="mb-3">
-            <input type="password" name="password" class="form-control" placeholder="Password" aria-describedby="passwordHelp">
+            <input type="password" th:field="*{password}" class="form-control" placeholder="Password" aria-describedby="passwordHelp">
           </div>
 
           <div class="d-grid">
