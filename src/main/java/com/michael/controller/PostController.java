@@ -3,6 +3,7 @@ package com.michael.controller;
 import com.michael.model.Comment;
 import com.michael.model.Post;
 import com.michael.model.User;
+import com.michael.service.contracts.ILikePostService;
 import com.michael.service.contracts.IPostService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
@@ -14,13 +15,17 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 
 import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpSession;
 import java.util.Set;
 
 @Controller
-public class DashboardController {
+public class PostController {
 
     @Autowired
     IPostService iPostService;
+
+    @Autowired
+    ILikePostService iLikePostService;
 
     @GetMapping("/dashboard")
     public String index(Model model)
@@ -44,20 +49,27 @@ public class DashboardController {
 
     @GetMapping("post/{id}")
     @Transactional
-    public String show(@PathVariable(value = "id") long id, Model model) {
+    public String show(@PathVariable(value = "id") long id, Model model, HttpSession session) {
+        User authenticatedUser = this.authenticatedUser(session);
 
         Post post = iPostService.getPostById(id);
         if (post == null) {
             //handle Exception
             return "";
         }
-
         Set<Comment> comments = post.getComment();
+        boolean isPostLikedByUser = iLikePostService.checkIfUserLikePost(authenticatedUser.getId(), post.getId());
+
+        int totalLikesOnPost = iLikePostService.totalNumberOfLikesOnPost(post.getId());
+
+        System.out.println("Total Likes here" + totalLikesOnPost);
 
 
         model.addAttribute("comment", new Comment());
         model.addAttribute("post", post);
         model.addAttribute("comments", comments);
+        model.addAttribute("isPostLikedByUser", isPostLikedByUser);
+        model.addAttribute("totalLikesOnPost", totalLikesOnPost);
         return "post-details";
     }
 
@@ -75,6 +87,21 @@ public class DashboardController {
 
         return "redirect:/dashboard";
 
+    }
+
+    @PostMapping("/post/like")
+    public String likePost(@ModelAttribute("post") Post post, HttpSession session) {
+        Post post1 = iPostService.getPostById(post.getId());
+        User authenticatedUser = this.authenticatedUser(session);
+
+        iLikePostService.likeOrUnLikePost(authenticatedUser, post1);
+
+        return "redirect:/post/" + post.getId();
+
+    }
+
+    private User authenticatedUser(HttpSession session) {
+        return (User) session.getAttribute("user_session");
     }
 
 }

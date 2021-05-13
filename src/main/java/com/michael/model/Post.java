@@ -17,9 +17,10 @@ public class Post {
     @JoinColumn(name = "user_id")
     private User user;
     private String body;
-
     @OneToMany(mappedBy = "post", cascade = CascadeType.ALL)
     private Set<Comment> comment;
+    @OneToMany(mappedBy = "post", cascade = CascadeType.ALL)
+    private Set<LikePost> likePosts;
 
     @Override
     public String toString() {

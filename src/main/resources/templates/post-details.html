@@ -56,7 +56,7 @@
                 <h5>
                     <span class="badge bg-dark">
                         No of Likes <br>
-                        0
+                        <span th:text="${totalLikesOnPost}"></span>
                     </span>
                 </h5>
             </div>
@@ -83,18 +83,18 @@
                     <p class="text-muted">Date Post was Created</p>
                     <div class="d-flex justify-content-between">
                         <form action="" th:action="@{/post/like}" th:object="${post}"  method="post">
-                            <input type="hidden" name="post_id" value="<%=post.getId()%>">
+                            <input type="hidden" th:field="*{id}">
 <!--                            <%-->
 <!--                            LikePostDAO likePostDAO = new LikePostDAO();-->
 
 <!--                            if (!likePostDAO.isPostLikedByUser(post.getId(), authUser.getId())) {-->
 <!--                            %>-->
-                            <button type="submit"  class="btn btn btn-outline-primary">Like</button>
+                            <button th:if="${isPostLikedByUser}" type="submit"  class="btn btn btn-outline-primary">Dislike</button>
 <!--                            <%-->
 <!--                            }-->
 <!--                            else {-->
 <!--                            %>-->
-                            <button type="submit" class="btn btn btn-outline-warning">Dislike</button>
+                            <button th:unless="${isPostLikedByUser}" type="submit" class="btn btn btn-outline-warning">Like</button>
 <!--                            <%-->
 <!--                            }-->
 <!--                            %>-->
