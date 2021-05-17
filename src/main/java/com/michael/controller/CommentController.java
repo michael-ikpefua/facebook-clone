@@ -11,6 +11,7 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import javax.servlet.http.HttpSession;
 
@@ -31,6 +32,15 @@ public class CommentController {
         iCommentService.addComment(authenticatedUser, post, comment.getBody());
 
         return "redirect:/post/" + post.getId();
+
+    }
+    @PostMapping("/comment/{id}/delete/{postId}")
+    public String delete(@PathVariable(value = "id") long id, @PathVariable(value = "postId") long postId, RedirectAttributes redirectAttributes) {
+        iCommentService.deleteComment(id);
+
+        redirectAttributes.addFlashAttribute("comment_delete", "Comment Deleted Successfully");
+
+        return "redirect:/post/" + postId;
 
     }
 }

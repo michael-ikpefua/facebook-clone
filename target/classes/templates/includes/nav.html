@@ -1,11 +1,4 @@
-<%--
-  Created by IntelliJ IDEA.
-  User: decagon
-  Date: 04/05/2021
-  Time: 4:22 PM
-  To change this template use File | Settings | File Templates.
---%>
-<nav class="navbar mb-5 navbar-expand-lg navbar-light bg-light">
+<nav th:fragment="nav" class="navbar mb-5 navbar-expand-lg navbar-light bg-light">
     <div class="container-fluid">
 
         <a class="navbar-brand" href="/dashboard">
@@ -20,19 +13,12 @@
             </ul>
             <div class="d-flex ">
                 <ul class="navbar-nav me-auto mb-2 mb-lg-0 d-flex justify-content-between align-items-center">
-                    <li class="nav-item">
-                       <%
-
-                           if (request.getSession().getAttribute("user_session") != null) {
-                               User user = (User) request.getSession().getAttribute("user_session");
-                               out.print(user.getName());
-                           }
-                       %>
+                    <li class="nav-item" th:if="${session.containsKey('user_session')}" th:text="${session.user_session.getFullName()}">
                     </li>
 
                     <li class="nav-item">
-                        <form action="<%= request.getContextPath() %>/front" method="get" >
-                            <input type="hidden" name="page" value="destroy">
+
+                        <form action="#"  th:action="@{/logout}" method="post">
                             <button type="submit" class="btn btn-outline-primary btn-sm">
                                 Logout
                             </button>

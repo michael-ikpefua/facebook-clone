@@ -24,7 +24,8 @@
     <div class="col-lg-5">
 
       <div class="shadow p-3 mb-5 bg-body rounded">
-          <p th:if="${not_found}" th:text="${not_found}" class="text-danger"> I am suupose to be here</p>
+
+        <div class="alert alert-danger" role="alert" th:text="${user_not_found}" th:if="${user_not_found}"></div>
 
         <form action="#" th:action="@{/login}" th:object="${user}" method="post">
 

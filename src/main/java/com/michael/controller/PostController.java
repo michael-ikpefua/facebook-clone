@@ -9,13 +9,16 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.ui.Model;
+import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
+import javax.validation.Valid;
 import java.util.Set;
 
 @Controller
@@ -39,12 +42,20 @@ public class PostController {
     }
 
     @PostMapping("/post")
-    public String store(@ModelAttribute("post") Post post, HttpServletRequest request) {
-        User loggedInUser = (User) request.getSession().getAttribute("user_session");
+    public String store(@ModelAttribute("post") @Valid Post post, BindingResult bindingResult, RedirectAttributes redirectAttributes, HttpServletRequest request) {
 
-        iPostService.addPost(post.getBody(), loggedInUser);
+       if (bindingResult.hasErrors()) {
+           redirectAttributes.addFlashAttribute("body_required", "Body field is required");
+           return "redirect:/dashboard";
 
-        return "redirect:/dashboard";
+       } else {
+           User loggedInUser = (User) request.getSession().getAttribute("user_session");
+
+           iPostService.addPost(post.getBody(), loggedInUser);
+           return "redirect:/dashboard";
+       }
+
+
     }
 
     @GetMapping("post/{id}")
@@ -62,9 +73,6 @@ public class PostController {
 
         int totalLikesOnPost = iLikePostService.totalNumberOfLikesOnPost(post.getId());
 
-        System.out.println("Total Likes here" + totalLikesOnPost);
-
-
         model.addAttribute("comment", new Comment());
         model.addAttribute("post", post);
         model.addAttribute("comments", comments);
@@ -74,16 +82,25 @@ public class PostController {
     }
 
     @PostMapping("/post/update")
-    public String update(@ModelAttribute("post") Post post) {
+    public String update(@ModelAttribute("post") @Valid Post post, BindingResult bindingResult, RedirectAttributes redirectAttributes) {
 
+        if (bindingResult.hasErrors()) {
+            redirectAttributes.addFlashAttribute("body_required", "Body field is required");
+            return "redirect:/post/" + post.getId();
+
+        }
         iPostService.updatePost(post.getId(), post.getBody());
+        redirectAttributes.addFlashAttribute("post_success", "Post Updated Successfully.");
+
 
         return "redirect:/post/" + post.getId();
     }
 
     @PostMapping("/post/delete")
-    public String delete(@ModelAttribute("post") Post post) {
+    public String delete(@ModelAttribute("post") Post post, RedirectAttributes redirectAttributes) {
         iPostService.deletePost(post.getId());
+
+        redirectAttributes.addFlashAttribute("delete_success", "Post Deleted Successfully");
 
         return "redirect:/dashboard";
 
